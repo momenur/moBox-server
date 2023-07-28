@@ -30,28 +30,30 @@ async function run() {
 
         const productsCollection = client.db("moboxDB").collection("products");
         const ordersCollection = client.db("moboxDB").collection("orders");
+        const usersCollection = client.db("moboxDB").collection("users");
 
-        app.get("/products", async(req, res) => {
+        // Product Collection
+        app.get("/products", async (req, res) => {
             const result = await productsCollection.find().toArray();
             res.send(result)
         })
 
 
         // Orders Collection
-        app.get('/order', async(req, res) => {
+        app.get('/order', async (req, res) => {
             const email = req.query.email;
-            if(!email){
+            if (!email) {
                 res.send([]);
             }
-            const query = { email: email}
+            const query = { email: email }
             const result = await ordersCollection.find(query).toArray();
             res.send(result)
         })
-        app.get('/customerOrder', async(req, res) => {
+        app.get('/customerOrder', async (req, res) => {
             const result = await ordersCollection.find().toArray();
             res.send(result)
         })
-        app.post('/order', async(req, res) => {
+        app.post('/order', async (req, res) => {
             const item = req.body;
             const result = await ordersCollection.insertOne(item);
             res.send(result)
@@ -62,7 +64,20 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await ordersCollection.deleteOne(query);
             res.send(result)
-          })
+        })
+
+        //   Users Collection
+        app.get('/users', async (req, res) => {
+            const result = await usersCollectionCollection.find().toArray();
+            res.send(result)
+        })
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
