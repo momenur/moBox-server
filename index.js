@@ -29,12 +29,31 @@ async function run() {
         await client.connect();
 
         const productsCollection = client.db("moboxDB").collection("products");
+        const ordersCollection = client.db("moboxDB").collection("orders");
 
         app.get("/products", async(req, res) => {
             const result = await productsCollection.find().toArray();
             res.send(result)
         })
 
+
+        // Orders Collection
+        app.get('/order', async(req, res) => {
+            const email = req.query.email;
+            if(!email){
+                res.send([]);
+            }
+            const query = { email: email}
+            const result = await ordersCollection.find(query).toArray();
+            res.send(result)
+        })
+
+        app.post('/order', async(req, res) => {
+            const item = req.body;
+            console.log(item);
+            const result = await ordersCollection.insertOne(item);
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
